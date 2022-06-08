@@ -3,6 +3,16 @@ class Post < ActiveRecord::Base
   has_many :comments
   has_many :post_tags
   has_many :tags, :through => :post_tags
+  accepts_nested_attributes_for :tags
 
   validates_presence_of :name, :content
+
+  def tags_attributes=(tag)
+    if !tag.first.blank?
+      tag.values.each do |t|
+        self.tags << Tag.find_or_create_by(t)
+      end
+    end
+  end
+
 end
